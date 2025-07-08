@@ -1,0 +1,134 @@
+@model MyWebApp.Models.WeatherResponse
+
+<div class="container-fluid min-vh-100 py-5" style="background: linear-gradient(135deg, #6e8efb, #a777e3);">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+            <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+                <!-- Search Form -->
+                <div class="card-header bg-white p-4">
+                    <form method="post" class="d-flex">
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="fas fa-search text-muted"></i>
+                            </span>
+                            <input type="text" 
+                                   name="city" 
+                                   class="form-control form-control-lg border-start-0" 
+                                   placeholder="Search another city..." 
+                                   value="@Model?.City"
+                                   required 
+                                   autofocus
+                                   autocomplete="off"
+                                   aria-label="City name">
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                @if (Model != null && Model.Weather != null && Model.Weather.Any())
+                {
+                    <!-- Weather Display -->
+                    <div class="card-body p-0">
+                        <!-- Current Weather -->
+                        <div class="text-center p-5" style="background: linear-gradient(135deg, #6e8efb, #a777e3); color: white;">
+                            <h2 class="mb-1 fw-bold">@Model.City</h2>
+                            <p class="mb-4">@DateTime.Now.ToString("dddd, MMMM d, yyyy")</p>
+                            
+                            <div class="d-flex justify-content-center align-items-center mb-4">
+                                @if (Model.Weather != null && Model.Weather.Count > 0)
+                                {
+                                    <img src="https://openweathermap.org/img/wn/@(Model.Weather[0]?.Icon)@@4x.png" 
+                                         alt="@Model.Weather[0]?.Description" 
+                                         style="width: 100px; height: 100px;">
+                                }
+                                <div class="ms-4">
+                                    <h1 class="display-3 fw-bold">@(Model.Main?.Temp != null ? Math.Round(Model.Main.Temp) : 0)°C</h1>
+                                    @if (Model.Weather != null && Model.Weather.Count > 0)
+                                    {
+                                        <h4 class="text-capitalize">@Model.Weather[0]?.Description</h4>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Weather Details -->
+                        <div class="bg-white p-4">
+                            <div class="row g-4">
+                                <div class="col-6">
+                                    <div class="p-3 bg-light rounded-3 text-center">
+                                        <i class="fas fa-tint text-primary mb-2" style="font-size: 1.5rem;"></i>
+                                        <h5 class="mb-1">Humidity</h5>
+                                        <p class="h4 mb-0 fw-bold">@(Model.Main?.Humidity ?? 0)%</p>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="p-3 bg-light rounded-3 text-center">
+                                        <i class="fas fa-wind text-primary mb-2" style="font-size: 1.5rem;"></i>
+                                        <h5 class="mb-1">Wind</h5>
+                                        <p class="h4 mb-0 fw-bold">@(Model.Wind?.Speed.ToString("0.0") ?? "N/A") km/h</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                else if (ViewBag.Error != null)
+                {
+                    <!-- Error Message -->
+                    <div class="card-body text-center p-5">
+                        <div class="alert alert-danger mb-0">
+                            <i class="fas fa-exclamation-triangle me-2"></i> @ViewBag.Error
+                        </div>
+                        <a href="/" class="btn btn-primary mt-4">
+                            <i class="fas fa-arrow-left me-2"></i>Back to Home
+                        </a>
+                    </div>
+                }
+            </div>
+
+            <!-- Footer -->
+            <div class="text-center mt-4 text-white-50">
+                <p class="mb-0">© @DateTime.Now.Year Weather App - Powered by OpenWeatherMap</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+    
+    .card {
+        border: none;
+        overflow: hidden;
+    }
+    
+    .form-control:focus {
+        box-shadow: none;
+        border-color: #6e8efb;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #6e8efb, #a777e3);
+        border: none;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .input-group-text {
+        background-color: transparent;
+    }
+    
+    .weather-icon {
+        width: 100px;
+        height: 100px;
+        object-fit: contain;
+    }
+</style>
